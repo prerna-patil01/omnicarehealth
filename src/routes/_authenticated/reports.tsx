@@ -1,26 +1,63 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { biomarkers } from "@/lib/mock-data";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Upload, FileText, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/reports")({
   component: Reports,
   head: () => ({ meta: [{ title: "Reports — OmniCare" }] }),
 });
 
-const PAST = [
-  { name: "Complete Blood Count — Dr Lal PathLabs", date: "12 Mar 2026" },
-  { name: "Lipid Panel — Metropolis", date: "18 Feb 2026" },
-  { name: "Dengue NS1 — Suburban Diagnostics", date: "3 Jul 2021" },
-];
+type Report = { id: string; name: string; report_date: string; file_path: string | null };
+type Biomarker = { id: string; name: string; value: string; unit: string; ref: string; flag: string; sort_order: number };
 
 function Reports() {
   const [state, setState] = useState<"idle" | "loading" | "done">("idle");
+  const [reports, setReports] = useState<Report[]>([]);
+  const [biomarkers, setBiomarkers] = useState<Biomarker[]>([]);
+  const fileInput = useRef<HTMLInputElement>(null);
 
-  function fake() {
+  async function refresh() {
+    const [{ data: rs }, { data: bs }] = await Promise.all([
+      supabase.from("reports").select("*").order("created_at", { ascending: false }),
+      supabase.from("biomarkers").select("*").order("sort_order"),
+    ]);
+    setReports((rs as Report[]) ?? []);
+    setBiomarkers((bs as Biomarker[]) ?? []);
+    if ((bs?.length ?? 0) > 0) setState("done");
+  }
+
+  useEffect(() => {
+    refresh();
+  }, []);
+
+  async function handleUpload(file: File) {
     setState("loading");
-    setTimeout(() => setState("done"), 1400);
+    const { data: userData } = await supabase.auth.getUser();
+    if (!userData.user) return;
+    const path = `${userData.user.id}/${Date.now()}-${file.name}`;
+    const { error: upErr } = await supabase.storage.from("reports").upload(path, file);
+    if (upErr) {
+      toast.error("Upload failed");
+      setState("idle");
+      return;
+    }
+    await supabase.from("reports").insert({
+      user_id: userData.user.id,
+      name: file.name,
+      report_date: new Date().toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }),
+      file_path: path,
+    });
+    setTimeout(async () => {
+      await refresh();
+      toast.success("Omni extracted biomarkers from your report");
+      setState("done");
+    }, 1200);
+  }
+
+  function pick() {
+    fileInput.current?.click();
   }
 
   return (
@@ -35,15 +72,27 @@ function Reports() {
         </p>
       </div>
 
+      <input
+        ref={fileInput}
+        type="file"
+        className="hidden"
+        onChange={(e) => e.target.files?.[0] && handleUpload(e.target.files[0])}
+      />
+
       <div
-        onClick={() => state === "idle" && fake()}
+        onClick={() => state !== "loading" && pick()}
         className="card-lux border-dashed border-2 border-primary/30 p-10 text-center cursor-pointer hover:bg-secondary/30 transition"
       >
-        {state === "idle" && (
+        {state !== "loading" && (
           <>
             <Upload className="h-8 w-8 mx-auto text-primary" />
-            <p className="mt-3 text-lg">Drop a PDF or photo, or <span className="editorial-italic text-primary underline">browse</span></p>
-            <p className="text-sm text-muted-foreground mt-1">CBC, LFT, Lipid, TFT — Omni parses all of them.</p>
+            <p className="mt-3 text-lg">
+              Drop a PDF or photo, or{" "}
+              <span className="editorial-italic text-primary underline">browse</span>
+            </p>
+            <p className="text-sm text-muted-foreground mt-1">
+              CBC, LFT, Lipid, TFT — Omni parses all of them.
+            </p>
           </>
         )}
         {state === "loading" && (
@@ -52,14 +101,13 @@ function Reports() {
             <span className="editorial-italic">Omni is reading your report…</span>
           </div>
         )}
-        {state === "done" && (
-          <p className="text-sage-foreground editorial-italic">✓ CBC report parsed · 8 biomarkers extracted</p>
-        )}
       </div>
 
-      {state === "done" && (
+      {biomarkers.length > 0 && (
         <section>
-          <h3 className="text-2xl mb-3">Extracted <span className="editorial-italic">biomarkers</span></h3>
+          <h3 className="text-2xl mb-3">
+            Extracted <span className="editorial-italic">biomarkers</span>
+          </h3>
           <div className="card-lux overflow-hidden">
             <table className="w-full text-sm">
               <thead className="bg-secondary/60 text-left">
@@ -72,9 +120,11 @@ function Reports() {
               </thead>
               <tbody>
                 {biomarkers.map((b) => (
-                  <tr key={b.name} className="border-t border-border">
+                  <tr key={b.id} className="border-t border-border">
                     <td className="p-3">{b.name}</td>
-                    <td className="p-3">{b.value} <span className="text-muted-foreground">{b.unit}</span></td>
+                    <td className="p-3">
+                      {b.value} <span className="text-muted-foreground">{b.unit}</span>
+                    </td>
                     <td className="p-3 text-muted-foreground">{b.ref}</td>
                     <td className="p-3">
                       <Flag flag={b.flag} />
@@ -96,12 +146,12 @@ function Reports() {
       <section>
         <h3 className="text-2xl mb-3 editorial-italic">Past reports</h3>
         <div className="grid md:grid-cols-2 gap-3">
-          {PAST.map((r) => (
-            <div key={r.name} className="card-lux p-4 flex items-center gap-3">
+          {reports.map((r) => (
+            <div key={r.id} className="card-lux p-4 flex items-center gap-3">
               <FileText className="h-8 w-8 text-primary shrink-0" />
               <div className="flex-1 min-w-0">
                 <p className="truncate">{r.name}</p>
-                <p className="text-xs text-muted-foreground editorial-italic">{r.date}</p>
+                <p className="text-xs text-muted-foreground editorial-italic">{r.report_date}</p>
               </div>
               <button
                 onClick={() => toast(`Opening ${r.name}`)}
@@ -111,6 +161,9 @@ function Reports() {
               </button>
             </div>
           ))}
+          {reports.length === 0 && (
+            <p className="text-muted-foreground italic">No reports yet.</p>
+          )}
         </div>
       </section>
     </div>
@@ -118,7 +171,9 @@ function Reports() {
 }
 
 function Flag({ flag }: { flag: string }) {
-  if (flag === "normal") return <span className="rounded-full bg-sage/50 px-2.5 py-0.5 text-xs">Normal</span>;
-  if (flag === "low") return <span className="rounded-full bg-amber-soft/60 px-2.5 py-0.5 text-xs">Low</span>;
+  if (flag === "normal")
+    return <span className="rounded-full bg-sage/50 px-2.5 py-0.5 text-xs">Normal</span>;
+  if (flag === "low")
+    return <span className="rounded-full bg-amber-soft/60 px-2.5 py-0.5 text-xs">Low</span>;
   return <span className="rounded-full bg-rose-soft/60 px-2.5 py-0.5 text-xs">High</span>;
 }
