@@ -19,7 +19,7 @@ export const vitals = [
 ];
 
 export const aiFinding = {
-  headline: "This looks like your gallbladder",
+  headline: "This looks like a Critical Finding in your health",
   condition: "Biliary colic",
   risk: 6.4,
   band: "Medium",
