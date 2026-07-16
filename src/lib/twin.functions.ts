@@ -6,8 +6,9 @@ export const computeTwin = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator(() => ({}))
   .handler(async ({ context }) => {
-    const { data: p } = await context.supabase.from("profiles").select("*").eq("id", context.userId).maybeSingle();
-    if (!p) throw new Error("no profile");
+    const { data: raw } = await context.supabase.from("profiles").select("*").eq("id", context.userId).maybeSingle();
+    if (!raw) throw new Error("no profile");
+    const p: any = raw;
 
     // Simple deterministic scoring
     let score = 90;
