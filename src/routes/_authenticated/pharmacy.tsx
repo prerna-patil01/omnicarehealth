@@ -1,22 +1,29 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { medicines } from "@/lib/mock-data";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Search, ShoppingCart, X, Plus, Minus } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/pharmacy")({
   component: Pharmacy,
   head: () => ({ meta: [{ title: "Pharmacy — OmniCare" }] }),
 });
 
+type Med = { id: string; name: string; generic: string; price: number; rx: boolean; eta: string; tag: string | null };
+
 function Pharmacy() {
   const [q, setQ] = useState("");
   const [cart, setCart] = useState<Record<string, number>>({});
   const [open, setOpen] = useState(false);
+  const [medicines, setMedicines] = useState<Med[]>([]);
+
+  useEffect(() => {
+    supabase.from("medicines").select("*").then(({ data }) => setMedicines((data as Med[]) ?? []));
+  }, []);
 
   const list = useMemo(
     () => medicines.filter((m) => (m.name + m.generic).toLowerCase().includes(q.toLowerCase())),
-    [q],
+    [q, medicines],
   );
 
   const rec = medicines.filter((m) => m.tag === "Recommended");
@@ -31,6 +38,28 @@ function Pharmacy() {
       if (next[id] === 0) delete next[id];
       return next;
     });
+  }
+
+  async function placeOrder() {
+    const { data: userData } = await supabase.auth.getUser();
+    if (!userData.user) return;
+    const { data: order, error } = await supabase
+      .from("orders")
+      .insert({ user_id: userData.user.id, total, status: "Placed" })
+      .select()
+      .single();
+    if (error || !order) {
+      toast.error("Could not place order");
+      return;
+    }
+    const items = Object.entries(cart).map(([id, n]) => {
+      const m = medicines.find((x) => x.id === id)!;
+      return { order_id: order.id, user_id: userData.user!.id, medicine_id: id, name: m.name, price: m.price, qty: n };
+    });
+    if (items.length) await supabase.from("order_items").insert(items);
+    toast.success("Order placed · arriving in 45 min");
+    setCart({});
+    setOpen(false);
   }
 
   return (
