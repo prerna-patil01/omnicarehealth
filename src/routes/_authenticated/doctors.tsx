@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { doctors } from "@/lib/mock-data";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { Star, MapPin, Video, IndianRupee, Clock, Search } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -17,10 +17,40 @@ export const Route = createFileRoute("/_authenticated/doctors")({
 
 const SPECS = ["All", "Gastroenterology", "General Physician", "Endocrinology", "Cardiology", "Gynaecology", "Dermatology"];
 
+type Doctor = { id: number; name: string; specialty: string; hospital: string; fee: number; distance: string; rating: number; slot: string };
+
 function FindDoctors() {
   const [q, setQ] = useState("");
   const [spec, setSpec] = useState("All");
-  const [booking, setBooking] = useState<any | null>(null);
+  const [booking, setBooking] = useState<Doctor | null>(null);
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    supabase.from("doctors").select("*").order("id").then(({ data }) => {
+      setDoctors((data as Doctor[]) ?? []);
+      setLoading(false);
+    });
+  }, []);
+
+  async function confirmBooking(slot: string) {
+    if (!booking) return;
+    const { data: userData } = await supabase.auth.getUser();
+    if (!userData.user) return;
+    await supabase.from("appointments").insert({
+      user_id: userData.user.id,
+      doctor: booking.name,
+      specialty: booking.specialty,
+      hospital: booking.hospital,
+      date: slot,
+      status: "Confirmed",
+      ride: true,
+      is_past: false,
+    });
+    toast.success(`Confirmed: ${booking.name} · ${slot}`);
+    setBooking(null);
+  }
+
   const list = useMemo(
     () =>
       doctors.filter(
@@ -30,7 +60,7 @@ function FindDoctors() {
             d.hospital.toLowerCase().includes(q.toLowerCase()) ||
             d.specialty.toLowerCase().includes(q.toLowerCase())),
       ),
-    [q, spec],
+    [q, spec, doctors],
   );
 
   return (
