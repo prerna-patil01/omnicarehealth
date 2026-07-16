@@ -192,11 +192,7 @@ function Pharmacy() {
             </div>
             <button
               disabled={total === 0}
-              onClick={() => {
-                toast.success("Order placed · arriving in 45 min");
-                setCart({});
-                setOpen(false);
-              }}
+              onClick={placeOrder}
               className="mt-4 w-full rounded-full bg-coral text-coral-foreground py-3 disabled:opacity-40"
             >
               Place order
