@@ -97,6 +97,111 @@ export type Database = {
           },
         ]
       }
+      care_workers: {
+        Row: {
+          area: string
+          availability: string
+          id: string
+          name: string
+          rate: number
+          rating: number
+          role: string
+        }
+        Insert: {
+          area?: string
+          availability: string
+          id: string
+          name: string
+          rate: number
+          rating?: number
+          role: string
+        }
+        Update: {
+          area?: string
+          availability?: string
+          id?: string
+          name?: string
+          rate?: number
+          rating?: number
+          role?: string
+        }
+        Relationships: []
+      }
+      cart_items: {
+        Row: {
+          created_at: string
+          id: string
+          medicine_id: string
+          qty: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          medicine_id: string
+          qty?: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          medicine_id?: string
+          qty?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      consent_grants: {
+        Row: {
+          granted: boolean
+          id: string
+          scope: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          granted?: boolean
+          id?: string
+          scope: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          granted?: boolean
+          id?: string
+          scope?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      conversations: {
+        Row: {
+          created_at: string
+          id: string
+          messages: Json
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          messages?: Json
+          title?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          messages?: Json
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       doctors: {
         Row: {
           distance: string
@@ -227,43 +332,88 @@ export type Database = {
           age: number
           allergies: string[]
           blood_group: string
+          bmi: number | null
+          conditions: string[] | null
           created_at: string
+          devices: Json | null
+          diet: string | null
+          dob: string | null
+          drinking: string | null
+          emergency_contact: Json | null
+          exercise: string | null
           family: Json
           first_name: string
+          height_cm: number | null
           history: string[]
           id: string
+          junk_frequency: string | null
           lifestyle: Json
+          medications: string[] | null
           name: string
+          onboarded: boolean | null
           region: string
           sex: string
+          smoking: string | null
+          surgeries: string[] | null
+          weight_kg: number | null
         }
         Insert: {
           age?: number
           allergies?: string[]
           blood_group?: string
+          bmi?: number | null
+          conditions?: string[] | null
           created_at?: string
+          devices?: Json | null
+          diet?: string | null
+          dob?: string | null
+          drinking?: string | null
+          emergency_contact?: Json | null
+          exercise?: string | null
           family?: Json
           first_name?: string
+          height_cm?: number | null
           history?: string[]
           id: string
+          junk_frequency?: string | null
           lifestyle?: Json
+          medications?: string[] | null
           name?: string
+          onboarded?: boolean | null
           region?: string
           sex?: string
+          smoking?: string | null
+          surgeries?: string[] | null
+          weight_kg?: number | null
         }
         Update: {
           age?: number
           allergies?: string[]
           blood_group?: string
+          bmi?: number | null
+          conditions?: string[] | null
           created_at?: string
+          devices?: Json | null
+          diet?: string | null
+          dob?: string | null
+          drinking?: string | null
+          emergency_contact?: Json | null
+          exercise?: string | null
           family?: Json
           first_name?: string
+          height_cm?: number | null
           history?: string[]
           id?: string
+          junk_frequency?: string | null
           lifestyle?: Json
+          medications?: string[] | null
           name?: string
+          onboarded?: boolean | null
           region?: string
           sex?: string
+          smoking?: string | null
+          surgeries?: string[] | null
+          weight_kg?: number | null
         }
         Relationships: []
       }
@@ -290,6 +440,36 @@ export type Database = {
           id?: string
           name?: string
           report_date?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      twin_snapshots: {
+        Row: {
+          bio_age: number
+          created_at: string
+          health_score: number
+          id: string
+          prone_to: Json
+          systems: Json
+          user_id: string
+        }
+        Insert: {
+          bio_age: number
+          created_at?: string
+          health_score: number
+          id?: string
+          prone_to: Json
+          systems: Json
+          user_id: string
+        }
+        Update: {
+          bio_age?: number
+          created_at?: string
+          health_score?: number
+          id?: string
+          prone_to?: Json
+          systems?: Json
           user_id?: string
         }
         Relationships: []
