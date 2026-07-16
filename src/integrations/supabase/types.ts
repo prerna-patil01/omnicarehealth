@@ -14,7 +14,286 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      appointments: {
+        Row: {
+          created_at: string
+          date: string
+          doctor: string
+          hospital: string
+          id: string
+          is_past: boolean
+          ride: boolean
+          specialty: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          doctor: string
+          hospital: string
+          id?: string
+          is_past?: boolean
+          ride?: boolean
+          specialty: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          doctor?: string
+          hospital?: string
+          id?: string
+          is_past?: boolean
+          ride?: boolean
+          specialty?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      biomarkers: {
+        Row: {
+          flag: string
+          id: string
+          name: string
+          ref: string
+          report_id: string | null
+          sort_order: number
+          unit: string
+          user_id: string
+          value: string
+        }
+        Insert: {
+          flag: string
+          id?: string
+          name: string
+          ref: string
+          report_id?: string | null
+          sort_order?: number
+          unit: string
+          user_id: string
+          value: string
+        }
+        Update: {
+          flag?: string
+          id?: string
+          name?: string
+          ref?: string
+          report_id?: string | null
+          sort_order?: number
+          unit?: string
+          user_id?: string
+          value?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "biomarkers_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      doctors: {
+        Row: {
+          distance: string
+          fee: number
+          hospital: string
+          id: number
+          name: string
+          rating: number
+          slot: string
+          specialty: string
+        }
+        Insert: {
+          distance: string
+          fee: number
+          hospital: string
+          id: number
+          name: string
+          rating: number
+          slot: string
+          specialty: string
+        }
+        Update: {
+          distance?: string
+          fee?: number
+          hospital?: string
+          id?: number
+          name?: string
+          rating?: number
+          slot?: string
+          specialty?: string
+        }
+        Relationships: []
+      }
+      medicines: {
+        Row: {
+          eta: string
+          generic: string
+          id: string
+          name: string
+          price: number
+          rx: boolean
+          tag: string | null
+        }
+        Insert: {
+          eta: string
+          generic: string
+          id: string
+          name: string
+          price: number
+          rx?: boolean
+          tag?: string | null
+        }
+        Update: {
+          eta?: string
+          generic?: string
+          id?: string
+          name?: string
+          price?: number
+          rx?: boolean
+          tag?: string | null
+        }
+        Relationships: []
+      }
+      order_items: {
+        Row: {
+          id: string
+          medicine_id: string
+          name: string
+          order_id: string
+          price: number
+          qty: number
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          medicine_id: string
+          name: string
+          order_id: string
+          price: number
+          qty?: number
+          user_id: string
+        }
+        Update: {
+          id?: string
+          medicine_id?: string
+          name?: string
+          order_id?: string
+          price?: number
+          qty?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          created_at: string
+          id: string
+          status: string
+          total: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          status?: string
+          total: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          status?: string
+          total?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          age: number
+          allergies: string[]
+          blood_group: string
+          created_at: string
+          family: Json
+          first_name: string
+          history: string[]
+          id: string
+          lifestyle: Json
+          name: string
+          region: string
+          sex: string
+        }
+        Insert: {
+          age?: number
+          allergies?: string[]
+          blood_group?: string
+          created_at?: string
+          family?: Json
+          first_name?: string
+          history?: string[]
+          id: string
+          lifestyle?: Json
+          name?: string
+          region?: string
+          sex?: string
+        }
+        Update: {
+          age?: number
+          allergies?: string[]
+          blood_group?: string
+          created_at?: string
+          family?: Json
+          first_name?: string
+          history?: string[]
+          id?: string
+          lifestyle?: Json
+          name?: string
+          region?: string
+          sex?: string
+        }
+        Relationships: []
+      }
+      reports: {
+        Row: {
+          created_at: string
+          file_path: string | null
+          id: string
+          name: string
+          report_date: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          file_path?: string | null
+          id?: string
+          name: string
+          report_date: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          file_path?: string | null
+          id?: string
+          name?: string
+          report_date?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
