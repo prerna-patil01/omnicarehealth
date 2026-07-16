@@ -1,17 +1,51 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { appointments } from "@/lib/mock-data";
 import { toast } from "sonner";
 import { Car, Calendar } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/appointments")({
   component: Appts,
   head: () => ({ meta: [{ title: "Appointments — OmniCare" }] }),
 });
 
+type Appt = {
+  id: string;
+  doctor: string;
+  specialty: string;
+  hospital: string;
+  date: string;
+  status: string;
+  ride: boolean;
+  is_past: boolean;
+};
+
 function Appts() {
   const [tab, setTab] = useState<"up" | "past">("up");
   const [ride, setRide] = useState<string | null>(null);
+  const [items, setItems] = useState<Appt[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  async function refresh() {
+    const { data } = await supabase
+      .from("appointments")
+      .select("*")
+      .order("created_at", { ascending: false });
+    setItems((data as Appt[]) ?? []);
+    setLoading(false);
+  }
+
+  useEffect(() => {
+    refresh();
+  }, []);
+
+  async function cancel(a: Appt) {
+    await supabase.from("appointments").update({ status: "Cancelled" }).eq("id", a.id);
+    toast.error(`Cancelled: ${a.doctor}`);
+    refresh();
+  }
+
+  const shown = items.filter((a) => (tab === "up" ? !a.is_past : a.is_past));
 
   return (
     <div className="space-y-6">
@@ -29,7 +63,7 @@ function Appts() {
         ].map((t) => (
           <button
             key={t.k}
-            onClick={() => setTab(t.k as any)}
+            onClick={() => setTab(t.k as "up" | "past")}
             className={`px-5 py-1.5 rounded-full text-sm ${
               tab === t.k ? "bg-primary text-primary-foreground" : ""
             }`}
@@ -40,14 +74,21 @@ function Appts() {
       </div>
 
       <div className="space-y-3">
-        {(tab === "up" ? appointments.upcoming : appointments.past).map((a: any) => (
+        {loading && <p className="text-muted-foreground italic">Loading…</p>}
+        {!loading && shown.length === 0 && (
+          <p className="text-muted-foreground italic">No appointments here.</p>
+        )}
+        {shown.map((a) => (
           <div key={a.id} className="card-lux p-5">
             <div className="flex flex-wrap items-start gap-4">
               <div className="h-11 w-11 rounded-full bg-primary text-primary-foreground grid place-items-center">
                 <Calendar className="h-5 w-5" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-lg">{a.doctor} <span className="text-muted-foreground editorial-italic text-sm">· {a.specialty}</span></p>
+                <p className="text-lg">
+                  {a.doctor}{" "}
+                  <span className="text-muted-foreground editorial-italic text-sm">· {a.specialty}</span>
+                </p>
                 <p className="text-sm text-muted-foreground">{a.hospital}</p>
               </div>
               <div className="text-right">
@@ -57,15 +98,17 @@ function Appts() {
                     a.status === "Confirmed"
                       ? "bg-sage/50"
                       : a.status === "Completed"
-                      ? "bg-secondary"
-                      : "bg-amber-soft/50"
+                        ? "bg-secondary"
+                        : a.status === "Cancelled"
+                          ? "bg-rose-soft/60"
+                          : "bg-amber-soft/50"
                   }`}
                 >
                   {a.status}
                 </span>
               </div>
             </div>
-            {tab === "up" && (
+            {tab === "up" && a.status !== "Cancelled" && (
               <div className="mt-4 flex flex-wrap gap-2">
                 {a.ride && (
                   <button
@@ -82,7 +125,7 @@ function Appts() {
                   Remind me
                 </button>
                 <button
-                  onClick={() => toast.error(`Cancelled: ${a.doctor}`)}
+                  onClick={() => cancel(a)}
                   className="rounded-full border border-border px-4 py-1.5 text-sm text-destructive"
                 >
                   Cancel
@@ -102,7 +145,10 @@ function Appts() {
       </div>
 
       {ride && (
-        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setRide(null)}>
+        <div
+          className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4"
+          onClick={() => setRide(null)}
+        >
           <div className="card-lux max-w-md w-full p-6" onClick={(e) => e.stopPropagation()}>
             <p className="text-xs uppercase tracking-widest text-muted-foreground">Ride to</p>
             <h3 className="text-2xl editorial-italic mt-1">{ride}</h3>
@@ -122,7 +168,9 @@ function Appts() {
                   className="w-full flex items-center justify-between rounded-xl border border-border px-4 py-3 hover:bg-secondary/60"
                 >
                   <span>{r.name}</span>
-                  <span className="text-sm text-muted-foreground">{r.eta} · <span className="editorial-italic">{r.fare}</span></span>
+                  <span className="text-sm text-muted-foreground">
+                    {r.eta} · <span className="editorial-italic">{r.fare}</span>
+                  </span>
                 </button>
               ))}
             </div>
