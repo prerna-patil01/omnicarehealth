@@ -75,14 +75,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content:
           "OmniCare is an AI-native health platform: Omni advises, humans decide. Doctors, records, pharmacy, and care in one health identity.",
       },
-      { property: "og:title", content: "OmniCare — AI-native healthcare" },
+      { property: "og:title", content: "OmniCare — One health identity, one intelligent care team" },
       {
         property: "og:description",
         content:
-          "One health identity across doctors, records, pharmacy and care. Omni advises, you decide.",
+          "OmniCare is an AI-native health platform: Omni advises, humans decide. Doctors, records, pharmacy, and care in one health identity.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "OmniCare — One health identity, one intelligent care team" },
+      { name: "twitter:description", content: "OmniCare is an AI-native health platform: Omni advises, humans decide. Doctors, records, pharmacy, and care in one health identity." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/e9983435-805b-42b3-9dec-10ad2fd0b07d/id-preview-5fc2b0fe--bfbc9491-65c3-4a15-ac70-18a2911f27c4.lovable.app-1784192298429.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/e9983435-805b-42b3-9dec-10ad2fd0b07d/id-preview-5fc2b0fe--bfbc9491-65c3-4a15-ac70-18a2911f27c4.lovable.app-1784192298429.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
