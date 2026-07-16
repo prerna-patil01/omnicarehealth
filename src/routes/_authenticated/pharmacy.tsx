@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { Search, ShoppingCart, X, Plus, Minus } from "lucide-react";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/pharmacy")({
+export const Route = createFileRoute("/_authenticated/pharmacy")({
   component: Pharmacy,
   head: () => ({ meta: [{ title: "Pharmacy — OmniCare" }] }),
 });

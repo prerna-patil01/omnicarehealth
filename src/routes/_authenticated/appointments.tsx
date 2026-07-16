@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { Car, Calendar } from "lucide-react";
 import { useState } from "react";
 
-export const Route = createFileRoute("/appointments")({
+export const Route = createFileRoute("/_authenticated/appointments")({
   component: Appts,
   head: () => ({ meta: [{ title: "Appointments — OmniCare" }] }),
 });

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Upload, FileText, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/reports")({
+export const Route = createFileRoute("/_authenticated/reports")({
   component: Reports,
   head: () => ({ meta: [{ title: "Reports — OmniCare" }] }),
 });

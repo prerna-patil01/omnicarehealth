@@ -9,100 +9,101 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ReportsRouteImport } from './routes/reports'
-import { Route as PharmacyRouteImport } from './routes/pharmacy'
-import { Route as InsightsRouteImport } from './routes/insights'
-import { Route as DoctorsRouteImport } from './routes/doctors'
-import { Route as DigitalTwinRouteImport } from './routes/digital-twin'
-import { Route as CareRouteImport } from './routes/care'
-import { Route as AskOmniRouteImport } from './routes/ask-omni'
-import { Route as AppointmentsRouteImport } from './routes/appointments'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
+import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
+import { Route as AuthenticatedPharmacyRouteImport } from './routes/_authenticated/pharmacy'
+import { Route as AuthenticatedInsightsRouteImport } from './routes/_authenticated/insights'
+import { Route as AuthenticatedDoctorsRouteImport } from './routes/_authenticated/doctors'
+import { Route as AuthenticatedDigitalTwinRouteImport } from './routes/_authenticated/digital-twin'
+import { Route as AuthenticatedCareRouteImport } from './routes/_authenticated/care'
+import { Route as AuthenticatedAskOmniRouteImport } from './routes/_authenticated/ask-omni'
+import { Route as AuthenticatedAppointmentsRouteImport } from './routes/_authenticated/appointments'
 
-const ReportsRoute = ReportsRouteImport.update({
-  id: '/reports',
-  path: '/reports',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PharmacyRoute = PharmacyRouteImport.update({
-  id: '/pharmacy',
-  path: '/pharmacy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const InsightsRoute = InsightsRouteImport.update({
-  id: '/insights',
-  path: '/insights',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DoctorsRoute = DoctorsRouteImport.update({
-  id: '/doctors',
-  path: '/doctors',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DigitalTwinRoute = DigitalTwinRouteImport.update({
-  id: '/digital-twin',
-  path: '/digital-twin',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CareRoute = CareRouteImport.update({
-  id: '/care',
-  path: '/care',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AskOmniRoute = AskOmniRouteImport.update({
-  id: '/ask-omni',
-  path: '/ask-omni',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AppointmentsRoute = AppointmentsRouteImport.update({
-  id: '/appointments',
-  path: '/appointments',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
+const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
+  id: '/_authenticated/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedReportsRoute = AuthenticatedReportsRouteImport.update({
+  id: '/_authenticated/reports',
+  path: '/reports',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedPharmacyRoute = AuthenticatedPharmacyRouteImport.update({
+  id: '/_authenticated/pharmacy',
+  path: '/pharmacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedInsightsRoute = AuthenticatedInsightsRouteImport.update({
+  id: '/_authenticated/insights',
+  path: '/insights',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedDoctorsRoute = AuthenticatedDoctorsRouteImport.update({
+  id: '/_authenticated/doctors',
+  path: '/doctors',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedDigitalTwinRoute =
+  AuthenticatedDigitalTwinRouteImport.update({
+    id: '/_authenticated/digital-twin',
+    path: '/digital-twin',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AuthenticatedCareRoute = AuthenticatedCareRouteImport.update({
+  id: '/_authenticated/care',
+  path: '/care',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAskOmniRoute = AuthenticatedAskOmniRouteImport.update({
+  id: '/_authenticated/ask-omni',
+  path: '/ask-omni',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAppointmentsRoute =
+  AuthenticatedAppointmentsRouteImport.update({
+    id: '/_authenticated/appointments',
+    path: '/appointments',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/appointments': typeof AppointmentsRoute
-  '/ask-omni': typeof AskOmniRoute
-  '/care': typeof CareRoute
-  '/digital-twin': typeof DigitalTwinRoute
-  '/doctors': typeof DoctorsRoute
-  '/insights': typeof InsightsRoute
-  '/pharmacy': typeof PharmacyRoute
-  '/reports': typeof ReportsRoute
+  '/appointments': typeof AuthenticatedAppointmentsRoute
+  '/ask-omni': typeof AuthenticatedAskOmniRoute
+  '/care': typeof AuthenticatedCareRoute
+  '/digital-twin': typeof AuthenticatedDigitalTwinRoute
+  '/doctors': typeof AuthenticatedDoctorsRoute
+  '/insights': typeof AuthenticatedInsightsRoute
+  '/pharmacy': typeof AuthenticatedPharmacyRoute
+  '/reports': typeof AuthenticatedReportsRoute
+  '/': typeof AuthenticatedIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/appointments': typeof AppointmentsRoute
-  '/ask-omni': typeof AskOmniRoute
-  '/care': typeof CareRoute
-  '/digital-twin': typeof DigitalTwinRoute
-  '/doctors': typeof DoctorsRoute
-  '/insights': typeof InsightsRoute
-  '/pharmacy': typeof PharmacyRoute
-  '/reports': typeof ReportsRoute
+  '/appointments': typeof AuthenticatedAppointmentsRoute
+  '/ask-omni': typeof AuthenticatedAskOmniRoute
+  '/care': typeof AuthenticatedCareRoute
+  '/digital-twin': typeof AuthenticatedDigitalTwinRoute
+  '/doctors': typeof AuthenticatedDoctorsRoute
+  '/insights': typeof AuthenticatedInsightsRoute
+  '/pharmacy': typeof AuthenticatedPharmacyRoute
+  '/reports': typeof AuthenticatedReportsRoute
+  '/': typeof AuthenticatedIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/appointments': typeof AppointmentsRoute
-  '/ask-omni': typeof AskOmniRoute
-  '/care': typeof CareRoute
-  '/digital-twin': typeof DigitalTwinRoute
-  '/doctors': typeof DoctorsRoute
-  '/insights': typeof InsightsRoute
-  '/pharmacy': typeof PharmacyRoute
-  '/reports': typeof ReportsRoute
+  '/_authenticated/appointments': typeof AuthenticatedAppointmentsRoute
+  '/_authenticated/ask-omni': typeof AuthenticatedAskOmniRoute
+  '/_authenticated/care': typeof AuthenticatedCareRoute
+  '/_authenticated/digital-twin': typeof AuthenticatedDigitalTwinRoute
+  '/_authenticated/doctors': typeof AuthenticatedDoctorsRoute
+  '/_authenticated/insights': typeof AuthenticatedInsightsRoute
+  '/_authenticated/pharmacy': typeof AuthenticatedPharmacyRoute
+  '/_authenticated/reports': typeof AuthenticatedReportsRoute
+  '/_authenticated/': typeof AuthenticatedIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
     | '/appointments'
     | '/ask-omni'
     | '/care'
@@ -111,9 +112,9 @@ export interface FileRouteTypes {
     | '/insights'
     | '/pharmacy'
     | '/reports'
+    | '/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
     | '/appointments'
     | '/ask-omni'
     | '/care'
@@ -122,109 +123,110 @@ export interface FileRouteTypes {
     | '/insights'
     | '/pharmacy'
     | '/reports'
+    | '/'
   id:
     | '__root__'
-    | '/'
-    | '/appointments'
-    | '/ask-omni'
-    | '/care'
-    | '/digital-twin'
-    | '/doctors'
-    | '/insights'
-    | '/pharmacy'
-    | '/reports'
+    | '/_authenticated/appointments'
+    | '/_authenticated/ask-omni'
+    | '/_authenticated/care'
+    | '/_authenticated/digital-twin'
+    | '/_authenticated/doctors'
+    | '/_authenticated/insights'
+    | '/_authenticated/pharmacy'
+    | '/_authenticated/reports'
+    | '/_authenticated/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AppointmentsRoute: typeof AppointmentsRoute
-  AskOmniRoute: typeof AskOmniRoute
-  CareRoute: typeof CareRoute
-  DigitalTwinRoute: typeof DigitalTwinRoute
-  DoctorsRoute: typeof DoctorsRoute
-  InsightsRoute: typeof InsightsRoute
-  PharmacyRoute: typeof PharmacyRoute
-  ReportsRoute: typeof ReportsRoute
+  AuthenticatedAppointmentsRoute: typeof AuthenticatedAppointmentsRoute
+  AuthenticatedAskOmniRoute: typeof AuthenticatedAskOmniRoute
+  AuthenticatedCareRoute: typeof AuthenticatedCareRoute
+  AuthenticatedDigitalTwinRoute: typeof AuthenticatedDigitalTwinRoute
+  AuthenticatedDoctorsRoute: typeof AuthenticatedDoctorsRoute
+  AuthenticatedInsightsRoute: typeof AuthenticatedInsightsRoute
+  AuthenticatedPharmacyRoute: typeof AuthenticatedPharmacyRoute
+  AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
+  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/reports': {
-      id: '/reports'
-      path: '/reports'
-      fullPath: '/reports'
-      preLoaderRoute: typeof ReportsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pharmacy': {
-      id: '/pharmacy'
-      path: '/pharmacy'
-      fullPath: '/pharmacy'
-      preLoaderRoute: typeof PharmacyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/insights': {
-      id: '/insights'
-      path: '/insights'
-      fullPath: '/insights'
-      preLoaderRoute: typeof InsightsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/doctors': {
-      id: '/doctors'
-      path: '/doctors'
-      fullPath: '/doctors'
-      preLoaderRoute: typeof DoctorsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/digital-twin': {
-      id: '/digital-twin'
-      path: '/digital-twin'
-      fullPath: '/digital-twin'
-      preLoaderRoute: typeof DigitalTwinRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/care': {
-      id: '/care'
-      path: '/care'
-      fullPath: '/care'
-      preLoaderRoute: typeof CareRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/ask-omni': {
-      id: '/ask-omni'
-      path: '/ask-omni'
-      fullPath: '/ask-omni'
-      preLoaderRoute: typeof AskOmniRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/appointments': {
-      id: '/appointments'
-      path: '/appointments'
-      fullPath: '/appointments'
-      preLoaderRoute: typeof AppointmentsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/': {
-      id: '/'
+    '/_authenticated/': {
+      id: '/_authenticated/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+      preLoaderRoute: typeof AuthenticatedIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/reports': {
+      id: '/_authenticated/reports'
+      path: '/reports'
+      fullPath: '/reports'
+      preLoaderRoute: typeof AuthenticatedReportsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/pharmacy': {
+      id: '/_authenticated/pharmacy'
+      path: '/pharmacy'
+      fullPath: '/pharmacy'
+      preLoaderRoute: typeof AuthenticatedPharmacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/insights': {
+      id: '/_authenticated/insights'
+      path: '/insights'
+      fullPath: '/insights'
+      preLoaderRoute: typeof AuthenticatedInsightsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/doctors': {
+      id: '/_authenticated/doctors'
+      path: '/doctors'
+      fullPath: '/doctors'
+      preLoaderRoute: typeof AuthenticatedDoctorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/digital-twin': {
+      id: '/_authenticated/digital-twin'
+      path: '/digital-twin'
+      fullPath: '/digital-twin'
+      preLoaderRoute: typeof AuthenticatedDigitalTwinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/care': {
+      id: '/_authenticated/care'
+      path: '/care'
+      fullPath: '/care'
+      preLoaderRoute: typeof AuthenticatedCareRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/ask-omni': {
+      id: '/_authenticated/ask-omni'
+      path: '/ask-omni'
+      fullPath: '/ask-omni'
+      preLoaderRoute: typeof AuthenticatedAskOmniRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/appointments': {
+      id: '/_authenticated/appointments'
+      path: '/appointments'
+      fullPath: '/appointments'
+      preLoaderRoute: typeof AuthenticatedAppointmentsRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  AppointmentsRoute: AppointmentsRoute,
-  AskOmniRoute: AskOmniRoute,
-  CareRoute: CareRoute,
-  DigitalTwinRoute: DigitalTwinRoute,
-  DoctorsRoute: DoctorsRoute,
-  InsightsRoute: InsightsRoute,
-  PharmacyRoute: PharmacyRoute,
-  ReportsRoute: ReportsRoute,
+  AuthenticatedAppointmentsRoute: AuthenticatedAppointmentsRoute,
+  AuthenticatedAskOmniRoute: AuthenticatedAskOmniRoute,
+  AuthenticatedCareRoute: AuthenticatedCareRoute,
+  AuthenticatedDigitalTwinRoute: AuthenticatedDigitalTwinRoute,
+  AuthenticatedDoctorsRoute: AuthenticatedDoctorsRoute,
+  AuthenticatedInsightsRoute: AuthenticatedInsightsRoute,
+  AuthenticatedPharmacyRoute: AuthenticatedPharmacyRoute,
+  AuthenticatedReportsRoute: AuthenticatedReportsRoute,
+  AuthenticatedIndexRoute: AuthenticatedIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -10,7 +10,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-export const Route = createFileRoute("/doctors")({
+export const Route = createFileRoute("/_authenticated/doctors")({
   component: FindDoctors,
   head: () => ({ meta: [{ title: "Find Doctors — OmniCare" }] }),
 });
