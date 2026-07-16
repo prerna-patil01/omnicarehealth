@@ -54,11 +54,13 @@ function Dashboard() {
           <div>
             <div className="flex items-center gap-2 text-xs uppercase tracking-widest opacity-80">
               <Sparkles className="h-3.5 w-3.5" /> Omni · clinical finding
+              <span className="ml-1 rounded-full bg-coral/25 text-coral-foreground px-2 py-0.5 text-[10px] tracking-widest">LIVE · computed for {firstName}</span>
             </div>
             <h2 className="mt-3 text-3xl md:text-4xl leading-tight">
               {finding.headline.split(" ").slice(0, -2).join(" ")} <span className="editorial-italic text-coral">{finding.headline.split(" ").slice(-2).join(" ")}</span>.
             </h2>
             <p className="mt-2 opacity-85">Consistent with <em>{finding.condition}</em>. Not an emergency yet — but worth attention.</p>
+            <p className="mt-1 text-xs opacity-70 editorial-italic">Personalised from your profile: {data.profileEcho}</p>
             <div className="mt-6">
               <p className="text-xs uppercase tracking-widest opacity-70 mb-2">Why Omni thinks so</p>
               <ul className="space-y-1.5 text-[15px]">

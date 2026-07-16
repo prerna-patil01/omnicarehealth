@@ -82,8 +82,9 @@ export const getDashboard = createServerFn({ method: "GET" })
     }
 
     const regional = { outbreak: "Dengue", change: "+150%", cases: 12, radius: "2 km", air: { aqi: 168, band: "Unhealthy" } };
+    const profileEcho = `mother — ${p.family?.mother ?? "n/a"} · father — ${p.family?.father ?? "n/a"} · BMI ${p.bmi ?? "?"} · sleep ${p.lifestyle?.sleep ?? "?"} · water ${p.lifestyle?.water ?? "?"} · stress ${p.lifestyle?.stress ?? "?"}`;
 
-    return { finding, vitals, regional, firstName: p.first_name ?? "there", region: p.region ?? "Mumbai" };
+    return { finding, vitals, regional, firstName: p.first_name ?? "there", region: p.region ?? "Mumbai", profileEcho };
   });
 
 export const getInsights = createServerFn({ method: "GET" })
