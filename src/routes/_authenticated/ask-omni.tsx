@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { Send, Sparkles, ChevronDown, Loader2 } from "lucide-react";
+import { Send, Sparkles, Loader2, Check } from "lucide-react";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
-import { omniChat } from "@/lib/omni.functions";
+import { omniChat, executeOmniAction } from "@/lib/omni.functions";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/ask-omni")({
@@ -12,19 +12,20 @@ export const Route = createFileRoute("/_authenticated/ask-omni")({
   head: () => ({ meta: [{ title: "Ask Omni — OmniCare" }] }),
 });
 
-type Msg = { role: "user" | "assistant"; content: string };
+type Msg = { role: "user" | "assistant"; content: string; agents?: { name: string; note: string }[]; action?: any };
 
-const AGENTS = [
-  { name: "Triage", role: "acuity & escalation", tone: "sage" },
-  { name: "Population", role: "regional patterns", tone: "amber" },
-  { name: "Biometrics", role: "vitals & wearable", tone: "sage" },
-  { name: "Records", role: "history & family", tone: "amber" },
-  { name: "Nutrition", role: "diet & trigger", tone: "amber" },
-  { name: "Skeptic", role: "counter-position", tone: "rose" },
-];
+const AGENT_META: Record<string, { tone: string; role: string }> = {
+  Triage: { tone: "sage", role: "acuity & escalation" },
+  Population: { tone: "amber", role: "regional patterns" },
+  Biometrics: { tone: "sage", role: "vitals & wearable" },
+  Records: { tone: "amber", role: "history & family" },
+  Nutrition: { tone: "amber", role: "diet & trigger" },
+  Skeptic: { tone: "rose", role: "counter-position" },
+};
 
 function AskOmni() {
   const chat = useServerFn(omniChat);
+  const runAction = useServerFn(executeOmniAction);
   const [messages, setMessages] = useState<Msg[]>([
     { role: "assistant", content: "Hi — I'm Omni. Tell me what you're feeling, or ask about a report, medicine, or symptom. I know your health identity, so I can be specific." },
   ]);
@@ -49,8 +50,9 @@ function AskOmni() {
     setMessages(next);
     setBusy(true);
     try {
-      const { reply } = await chat({ data: { messages: next } });
-      setMessages((m) => [...m, { role: "assistant", content: reply }]);
+      const historyForModel = next.map(({ role, content }) => ({ role, content }));
+      const { reply, agents, action } = await chat({ data: { messages: historyForModel } });
+      setMessages((m) => [...m, { role: "assistant", content: reply, agents, action }]);
     } catch (e: any) {
       toast.error(e.message ?? "Omni is unavailable");
       setMessages((m) => [...m, { role: "assistant", content: "I couldn't reach my reasoning core. Try again in a moment." }]);
@@ -58,6 +60,18 @@ function AskOmni() {
       setBusy(false);
     }
   }
+
+  async function confirmAction(idx: number, action: any) {
+    try {
+      const res = await runAction({ data: { kind: action.kind, payload: action.payload } });
+      if (res.ok) toast.success(res.message); else toast.error(res.message);
+      setMessages((m) => m.map((msg, i) => (i === idx ? { ...msg, action: { ...msg.action, done: true } } : msg)));
+    } catch (e: any) {
+      toast.error(e.message ?? "Action failed");
+    }
+  }
+
+  const lastAgents = [...messages].reverse().find((m) => m.role === "assistant" && m.agents?.length)?.agents;
 
   return (
     <div className="grid lg:grid-cols-[1fr_360px] gap-6">
@@ -75,7 +89,7 @@ function AskOmni() {
 
         <div ref={scrollRef} className="flex-1 overflow-y-auto px-5 py-6 space-y-4">
           {messages.map((m, i) => (
-            <Bubble key={i} m={m} />
+            <Bubble key={i} m={m} onConfirm={() => m.action && confirmAction(i, m.action)} />
           ))}
           {busy && (
             <div className="text-sm text-muted-foreground editorial-italic flex items-center gap-2">
@@ -113,13 +127,18 @@ function AskOmni() {
           <p className="text-xs uppercase tracking-widest text-muted-foreground">Deliberation</p>
           <h4 className="text-xl mt-1">Six agents, one <span className="editorial-italic">verdict</span></h4>
           <div className="mt-4 space-y-2">
-            {AGENTS.map((a) => (
-              <div key={a.name} className="rounded-xl border border-border px-3 py-2 flex items-center gap-2">
-                <span className={`h-2 w-2 rounded-full ${a.tone === "sage" ? "bg-sage" : a.tone === "amber" ? "bg-amber-soft" : "bg-rose-soft"}`} />
-                <span className="font-medium">{a.name}</span>
-                <span className="text-xs text-muted-foreground editorial-italic ml-auto">{a.role}</span>
-              </div>
-            ))}
+            {(lastAgents ?? Object.keys(AGENT_META).map((n) => ({ name: n, note: AGENT_META[n].role }))).map((a) => {
+              const meta = AGENT_META[a.name] ?? { tone: "sage", role: "" };
+              return (
+                <div key={a.name} className="rounded-xl border border-border px-3 py-2">
+                  <div className="flex items-center gap-2">
+                    <span className={`h-2 w-2 rounded-full ${meta.tone === "sage" ? "bg-sage" : meta.tone === "amber" ? "bg-amber-soft" : "bg-rose-soft"}`} />
+                    <span className="font-medium text-sm">{a.name}</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground editorial-italic mt-1">{a.note}</p>
+                </div>
+              );
+            })}
           </div>
         </div>
 
@@ -141,7 +160,7 @@ function AskOmni() {
   );
 }
 
-function Bubble({ m }: { m: Msg }) {
+function Bubble({ m, onConfirm }: { m: Msg; onConfirm: () => void }) {
   if (m.role === "user") {
     return (
       <div className="flex justify-end">
@@ -159,6 +178,21 @@ function Bubble({ m }: { m: Msg }) {
       <div className="rounded-2xl rounded-bl-md bg-secondary px-4 py-3 whitespace-pre-wrap text-[15px] leading-relaxed">
         {m.content}
       </div>
+      {m.action && (
+        <div className="mt-3 rounded-2xl border border-coral/40 bg-coral/5 px-4 py-3">
+          <p className="text-xs uppercase tracking-widest text-muted-foreground">Suggested action</p>
+          <p className="editorial-italic mt-1">
+            {m.action.kind === "book_appointment" && `Book ${m.action.payload.doctor ?? m.action.payload.specialty} · ${m.action.payload.date ?? "soon"}`}
+            {m.action.kind === "add_to_cart" && `Add ${m.action.payload.name} to your cart`}
+            {m.action.kind === "set_reminder" && `Remind: ${m.action.payload.title} · ${m.action.payload.when}`}
+          </p>
+          {m.action.done ? (
+            <p className="mt-2 text-sm text-primary flex items-center gap-1.5"><Check className="h-4 w-4" /> Confirmed</p>
+          ) : (
+            <button onClick={onConfirm} className="mt-3 rounded-full bg-coral text-coral-foreground px-4 py-1.5 text-sm">Confirm</button>
+          )}
+        </div>
+      )}
     </div>
   );
 }
