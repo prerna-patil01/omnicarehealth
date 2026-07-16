@@ -9,8 +9,56 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ReportsRouteImport } from './routes/reports'
+import { Route as PharmacyRouteImport } from './routes/pharmacy'
+import { Route as InsightsRouteImport } from './routes/insights'
+import { Route as DoctorsRouteImport } from './routes/doctors'
+import { Route as DigitalTwinRouteImport } from './routes/digital-twin'
+import { Route as CareRouteImport } from './routes/care'
+import { Route as AskOmniRouteImport } from './routes/ask-omni'
+import { Route as AppointmentsRouteImport } from './routes/appointments'
 import { Route as IndexRouteImport } from './routes/index'
 
+const ReportsRoute = ReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PharmacyRoute = PharmacyRouteImport.update({
+  id: '/pharmacy',
+  path: '/pharmacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InsightsRoute = InsightsRouteImport.update({
+  id: '/insights',
+  path: '/insights',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DoctorsRoute = DoctorsRouteImport.update({
+  id: '/doctors',
+  path: '/doctors',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DigitalTwinRoute = DigitalTwinRouteImport.update({
+  id: '/digital-twin',
+  path: '/digital-twin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CareRoute = CareRouteImport.update({
+  id: '/care',
+  path: '/care',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AskOmniRoute = AskOmniRouteImport.update({
+  id: '/ask-omni',
+  path: '/ask-omni',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppointmentsRoute = AppointmentsRouteImport.update({
+  id: '/appointments',
+  path: '/appointments',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +67,144 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/appointments': typeof AppointmentsRoute
+  '/ask-omni': typeof AskOmniRoute
+  '/care': typeof CareRoute
+  '/digital-twin': typeof DigitalTwinRoute
+  '/doctors': typeof DoctorsRoute
+  '/insights': typeof InsightsRoute
+  '/pharmacy': typeof PharmacyRoute
+  '/reports': typeof ReportsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/appointments': typeof AppointmentsRoute
+  '/ask-omni': typeof AskOmniRoute
+  '/care': typeof CareRoute
+  '/digital-twin': typeof DigitalTwinRoute
+  '/doctors': typeof DoctorsRoute
+  '/insights': typeof InsightsRoute
+  '/pharmacy': typeof PharmacyRoute
+  '/reports': typeof ReportsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/appointments': typeof AppointmentsRoute
+  '/ask-omni': typeof AskOmniRoute
+  '/care': typeof CareRoute
+  '/digital-twin': typeof DigitalTwinRoute
+  '/doctors': typeof DoctorsRoute
+  '/insights': typeof InsightsRoute
+  '/pharmacy': typeof PharmacyRoute
+  '/reports': typeof ReportsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/appointments'
+    | '/ask-omni'
+    | '/care'
+    | '/digital-twin'
+    | '/doctors'
+    | '/insights'
+    | '/pharmacy'
+    | '/reports'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/appointments'
+    | '/ask-omni'
+    | '/care'
+    | '/digital-twin'
+    | '/doctors'
+    | '/insights'
+    | '/pharmacy'
+    | '/reports'
+  id:
+    | '__root__'
+    | '/'
+    | '/appointments'
+    | '/ask-omni'
+    | '/care'
+    | '/digital-twin'
+    | '/doctors'
+    | '/insights'
+    | '/pharmacy'
+    | '/reports'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AppointmentsRoute: typeof AppointmentsRoute
+  AskOmniRoute: typeof AskOmniRoute
+  CareRoute: typeof CareRoute
+  DigitalTwinRoute: typeof DigitalTwinRoute
+  DoctorsRoute: typeof DoctorsRoute
+  InsightsRoute: typeof InsightsRoute
+  PharmacyRoute: typeof PharmacyRoute
+  ReportsRoute: typeof ReportsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/reports': {
+      id: '/reports'
+      path: '/reports'
+      fullPath: '/reports'
+      preLoaderRoute: typeof ReportsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pharmacy': {
+      id: '/pharmacy'
+      path: '/pharmacy'
+      fullPath: '/pharmacy'
+      preLoaderRoute: typeof PharmacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/insights': {
+      id: '/insights'
+      path: '/insights'
+      fullPath: '/insights'
+      preLoaderRoute: typeof InsightsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/doctors': {
+      id: '/doctors'
+      path: '/doctors'
+      fullPath: '/doctors'
+      preLoaderRoute: typeof DoctorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/digital-twin': {
+      id: '/digital-twin'
+      path: '/digital-twin'
+      fullPath: '/digital-twin'
+      preLoaderRoute: typeof DigitalTwinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/care': {
+      id: '/care'
+      path: '/care'
+      fullPath: '/care'
+      preLoaderRoute: typeof CareRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ask-omni': {
+      id: '/ask-omni'
+      path: '/ask-omni'
+      fullPath: '/ask-omni'
+      preLoaderRoute: typeof AskOmniRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/appointments': {
+      id: '/appointments'
+      path: '/appointments'
+      fullPath: '/appointments'
+      preLoaderRoute: typeof AppointmentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,17 +217,15 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AppointmentsRoute: AppointmentsRoute,
+  AskOmniRoute: AskOmniRoute,
+  CareRoute: CareRoute,
+  DigitalTwinRoute: DigitalTwinRoute,
+  DoctorsRoute: DoctorsRoute,
+  InsightsRoute: InsightsRoute,
+  PharmacyRoute: PharmacyRoute,
+  ReportsRoute: ReportsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
