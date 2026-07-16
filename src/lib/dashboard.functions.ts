@@ -41,7 +41,7 @@ export const getDashboard = createServerFn({ method: "GET" })
     let finding: any;
     if (motherGall) {
       finding = {
-        headline: "This looks like your gallbladder",
+        headline: "This looks like a Critical Finding in your health",
         condition: "Biliary colic — early signal",
         risk: 6.4, band: "Medium",
         reasoning: [
@@ -55,7 +55,7 @@ export const getDashboard = createServerFn({ method: "GET" })
       };
     } else if (fatherDiab) {
       finding = {
-        headline: "Watch your metabolic drift",
+        headline: "This looks like a Critical Finding in your health",
         condition: "Pre-diabetic pattern risk",
         risk: 5.2, band: "Medium",
         reasoning: [
@@ -68,7 +68,7 @@ export const getDashboard = createServerFn({ method: "GET" })
       };
     } else {
       finding = {
-        headline: "You're broadly healthy — one lever to pull",
+        headline: "This looks like a Critical Finding in your health",
         condition: lowHydration ? "Chronic mild dehydration" : "Sleep debt",
         risk: 3.8, band: "Low",
         reasoning: [
