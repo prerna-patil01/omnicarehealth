@@ -1,9 +1,10 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { ArrowDown, ArrowUp, Sparkles, ShieldAlert, Wind, Activity } from "lucide-react";
-import { aiFinding, vitals, regional } from "@/lib/mock-data";
+import { ArrowDown, ArrowUp, Sparkles, ShieldAlert, Wind, Activity, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useServerFn } from "@tanstack/react-start";
+import { getDashboard } from "@/lib/dashboard.functions";
 
 export const Route = createFileRoute("/_authenticated/")({
   component: Dashboard,
@@ -13,27 +14,31 @@ export const Route = createFileRoute("/_authenticated/")({
 
 function Dashboard() {
   const nav = useNavigate();
-  const [profile, setProfile] = useState<any>(null);
+  const load = useServerFn(getDashboard);
+  const [data, setData] = useState<any>(null);
 
   useEffect(() => {
-    supabase.from("profiles").select("*").maybeSingle().then(({ data }) => {
-      if (data && (data as any).onboarded === false) {
-        nav({ to: "/onboarding" });
-        return;
-      }
-      setProfile(data);
-    });
-  }, [nav]);
+    (async () => {
+      const { data: prof } = await supabase.from("profiles").select("onboarded").maybeSingle();
+      if (prof && (prof as any).onboarded === false) { nav({ to: "/onboarding" }); return; }
+      const res = await load({});
+      setData(res);
+    })();
+  }, [nav, load]);
 
-  const first = profile?.first_name ?? "there";
+  if (!data) {
+    return <div className="flex items-center gap-2 text-muted-foreground italic"><Loader2 className="h-4 w-4 animate-spin" /> Omni is composing your dashboard…</div>;
+  }
+
+  const { finding, vitals, regional, firstName, region } = data;
 
   return (
     <div className="space-y-8">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-sm text-muted-foreground uppercase tracking-widest">{new Date().toLocaleDateString("en-GB", { weekday: "long" })} · {profile?.region ?? "Mumbai"}</p>
+          <p className="text-sm text-muted-foreground uppercase tracking-widest">{new Date().toLocaleDateString("en-GB", { weekday: "long" })} · {region}</p>
           <h1 className="text-4xl md:text-5xl mt-1">
-            Good to see you, <span className="editorial-italic text-primary">{first}</span>
+            Good to see you, <span className="editorial-italic text-primary">{firstName}</span>
           </h1>
           <p className="text-muted-foreground mt-1">Omni has been listening to your body while you slept.</p>
         </div>
@@ -51,19 +56,19 @@ function Dashboard() {
               <Sparkles className="h-3.5 w-3.5" /> Omni · clinical finding
             </div>
             <h2 className="mt-3 text-3xl md:text-4xl leading-tight">
-              This looks like <span className="editorial-italic text-coral">your gallbladder</span>.
+              {finding.headline.split(" ").slice(0, -2).join(" ")} <span className="editorial-italic text-coral">{finding.headline.split(" ").slice(-2).join(" ")}</span>.
             </h2>
-            <p className="mt-2 opacity-85">Consistent with <em>biliary colic</em>. Not an emergency yet — but worth a scan today.</p>
+            <p className="mt-2 opacity-85">Consistent with <em>{finding.condition}</em>. Not an emergency yet — but worth attention.</p>
             <div className="mt-6">
               <p className="text-xs uppercase tracking-widest opacity-70 mb-2">Why Omni thinks so</p>
               <ul className="space-y-1.5 text-[15px]">
-                {aiFinding.reasoning.map((r) => (
+                {finding.reasoning.map((r: string) => (
                   <li key={r} className="flex gap-2"><span className="text-coral">·</span><span className="opacity-95">{r}</span></li>
                 ))}
               </ul>
             </div>
             <div className="mt-6 flex flex-wrap gap-2">
-              <Link to="/doctors" className="rounded-full bg-coral px-5 py-2 text-sm text-coral-foreground">Book Dr. Meera Rao</Link>
+              <Link to="/doctors" className="rounded-full bg-coral px-5 py-2 text-sm text-coral-foreground">Find a specialist</Link>
               <Link to="/ask-omni" className="rounded-full bg-primary-foreground/10 border border-primary-foreground/25 px-5 py-2 text-sm">Discuss with Omni</Link>
               <button onClick={() => toast("Full reasoning trail saved to your record")} className="rounded-full bg-primary-foreground/10 border border-primary-foreground/25 px-5 py-2 text-sm">Save reasoning</button>
             </div>
@@ -71,16 +76,16 @@ function Dashboard() {
           <div className="card-lux bg-background/95 text-foreground p-6 rounded-3xl">
             <p className="text-xs uppercase tracking-widest text-muted-foreground">Risk score</p>
             <div className="flex items-end gap-2 mt-1">
-              <span className="text-6xl text-primary editorial-italic">{aiFinding.risk}</span>
+              <span className="text-6xl text-primary editorial-italic">{finding.risk}</span>
               <span className="text-muted-foreground mb-2">/ 10</span>
             </div>
             <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-amber-soft/50 px-3 py-1 text-xs">
-              <ShieldAlert className="h-3.5 w-3.5" /> {aiFinding.band}
+              <ShieldAlert className="h-3.5 w-3.5" /> {finding.band}
             </div>
             <div className="mt-5">
               <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">Suggested next</p>
               <ul className="space-y-1.5 text-sm">
-                {aiFinding.next.map((n) => <li key={n} className="flex gap-2"><span className="text-coral">→</span><span>{n}</span></li>)}
+                {finding.next.map((n: string) => <li key={n} className="flex gap-2"><span className="text-coral">→</span><span>{n}</span></li>)}
               </ul>
             </div>
           </div>
@@ -93,7 +98,7 @@ function Dashboard() {
           <span className="text-xs text-muted-foreground">Synced 4 min ago · Apple Watch</span>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {vitals.map((v) => (
+          {vitals.map((v: any) => (
             <div key={v.label} className="card-lux p-5">
               <p className="text-xs uppercase tracking-widest text-muted-foreground">{v.label}</p>
               <div className="mt-2 flex items-end gap-1.5">
