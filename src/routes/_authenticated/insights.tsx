@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { insights, regional } from "@/lib/mock-data";
 import { Wind, Droplet, Heart, Moon, Activity } from "lucide-react";
 
-export const Route = createFileRoute("/insights")({
+export const Route = createFileRoute("/_authenticated/insights")({
   component: Insights,
   head: () => ({ meta: [{ title: "Health Insights — OmniCare" }] }),
 });

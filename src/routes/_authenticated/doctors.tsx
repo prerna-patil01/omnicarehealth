@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { doctors } from "@/lib/mock-data";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { Star, MapPin, Video, IndianRupee, Clock, Search } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -10,17 +10,47 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-export const Route = createFileRoute("/doctors")({
+export const Route = createFileRoute("/_authenticated/doctors")({
   component: FindDoctors,
   head: () => ({ meta: [{ title: "Find Doctors — OmniCare" }] }),
 });
 
 const SPECS = ["All", "Gastroenterology", "General Physician", "Endocrinology", "Cardiology", "Gynaecology", "Dermatology"];
 
+type Doctor = { id: number; name: string; specialty: string; hospital: string; fee: number; distance: string; rating: number; slot: string };
+
 function FindDoctors() {
   const [q, setQ] = useState("");
   const [spec, setSpec] = useState("All");
-  const [booking, setBooking] = useState<any | null>(null);
+  const [booking, setBooking] = useState<Doctor | null>(null);
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    supabase.from("doctors").select("*").order("id").then(({ data }) => {
+      setDoctors((data as Doctor[]) ?? []);
+      setLoading(false);
+    });
+  }, []);
+
+  async function confirmBooking(slot: string) {
+    if (!booking) return;
+    const { data: userData } = await supabase.auth.getUser();
+    if (!userData.user) return;
+    await supabase.from("appointments").insert({
+      user_id: userData.user.id,
+      doctor: booking.name,
+      specialty: booking.specialty,
+      hospital: booking.hospital,
+      date: slot,
+      status: "Confirmed",
+      ride: true,
+      is_past: false,
+    });
+    toast.success(`Confirmed: ${booking.name} · ${slot}`);
+    setBooking(null);
+  }
+
   const list = useMemo(
     () =>
       doctors.filter(
@@ -30,7 +60,7 @@ function FindDoctors() {
             d.hospital.toLowerCase().includes(q.toLowerCase()) ||
             d.specialty.toLowerCase().includes(q.toLowerCase())),
       ),
-    [q, spec],
+    [q, spec, doctors],
   );
 
   return (
@@ -114,9 +144,10 @@ function FindDoctors() {
             </div>
           </div>
         ))}
-        {list.length === 0 && (
+        {!loading && list.length === 0 && (
           <p className="text-muted-foreground italic col-span-full">No doctors match that filter.</p>
         )}
+        {loading && <p className="text-muted-foreground italic col-span-full">Loading care team…</p>}
       </div>
 
       <Dialog open={!!booking} onOpenChange={(o) => !o && setBooking(null)}>
@@ -134,16 +165,17 @@ function FindDoctors() {
               </div>
               <div className="grid grid-cols-3 gap-2">
                 {["Today, 5:30 PM", "Today, 7:00 PM", "Tomorrow, 10 AM"].map((s) => (
-                  <button key={s} className="rounded-lg border border-border py-2 text-xs hover:bg-secondary">
+                  <button
+                    key={s}
+                    onClick={() => confirmBooking(s)}
+                    className="rounded-lg border border-border py-2 text-xs hover:bg-secondary"
+                  >
                     {s}
                   </button>
                 ))}
               </div>
               <button
-                onClick={() => {
-                  toast.success(`Confirmed: ${booking.name} · ${booking.slot}`);
-                  setBooking(null);
-                }}
+                onClick={() => confirmBooking(booking.slot)}
                 className="w-full rounded-full bg-primary text-primary-foreground py-2.5"
               >
                 Confirm appointment

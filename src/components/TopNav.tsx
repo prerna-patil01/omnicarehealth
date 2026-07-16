@@ -1,6 +1,8 @@
-import { Link, useRouterState } from "@tanstack/react-router";
-import { Bell, Search, Moon, Sun, Siren, Menu, X } from "lucide-react";
+import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
+import { Bell, Search, Moon, Sun, Siren, Menu, X, LogOut } from "lucide-react";
 import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -30,6 +32,15 @@ export function TopNav() {
   const [notifOpen, setNotifOpen] = useState(false);
   const [mobile, setMobile] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  async function signOut() {
+    await queryClient.cancelQueries();
+    queryClient.clear();
+    await supabase.auth.signOut();
+    navigate({ to: "/auth", replace: true });
+  }
 
   useEffect(() => {
     const root = document.documentElement;
@@ -105,6 +116,16 @@ export function TopNav() {
             <div className="ml-1 h-9 w-9 rounded-full bg-primary text-primary-foreground grid place-items-center text-sm font-semibold">
               PP
             </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-full"
+              onClick={signOut}
+              aria-label="Sign out"
+              title="Sign out"
+            >
+              <LogOut className="h-5 w-5" />
+            </Button>
             <Button
               variant="ghost"
               size="icon"

@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Send, Sparkles, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/ask-omni")({
+export const Route = createFileRoute("/_authenticated/ask-omni")({
   component: AskOmni,
   head: () => ({ meta: [{ title: "Ask Omni — OmniCare" }] }),
 });

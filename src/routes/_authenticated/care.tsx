@@ -3,7 +3,7 @@ import { careProviders } from "@/lib/mock-data";
 import { toast } from "sonner";
 import { Home } from "lucide-react";
 
-export const Route = createFileRoute("/care")({
+export const Route = createFileRoute("/_authenticated/care")({
   component: Care,
   head: () => ({ meta: [{ title: "Care Services — OmniCare" }] }),
 });

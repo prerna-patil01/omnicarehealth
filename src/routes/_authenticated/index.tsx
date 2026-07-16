@@ -4,7 +4,7 @@ import { aiFinding, patient, regional, vitals, systems } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/_authenticated/")({
   component: Dashboard,
   head: () => ({
     meta: [{ title: "Dashboard — OmniCare" }],

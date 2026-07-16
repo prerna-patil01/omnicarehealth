@@ -3,7 +3,7 @@ import { systems, prone } from "@/lib/mock-data";
 import { useState } from "react";
 import { Sparkles } from "lucide-react";
 
-export const Route = createFileRoute("/digital-twin")({
+export const Route = createFileRoute("/_authenticated/digital-twin")({
   component: DigitalTwin,
   head: () => ({ meta: [{ title: "Digital Twin — OmniCare" }] }),
 });
