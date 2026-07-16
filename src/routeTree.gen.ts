@@ -14,9 +14,12 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
 import { Route as AuthenticatedPharmacyRouteImport } from './routes/_authenticated/pharmacy'
+import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
 import { Route as AuthenticatedInsightsRouteImport } from './routes/_authenticated/insights'
 import { Route as AuthenticatedDoctorsRouteImport } from './routes/_authenticated/doctors'
 import { Route as AuthenticatedDigitalTwinRouteImport } from './routes/_authenticated/digital-twin'
+import { Route as AuthenticatedConsentRouteImport } from './routes/_authenticated/consent'
+import { Route as AuthenticatedCartRouteImport } from './routes/_authenticated/cart'
 import { Route as AuthenticatedCareRouteImport } from './routes/_authenticated/care'
 import { Route as AuthenticatedAskOmniRouteImport } from './routes/_authenticated/ask-omni'
 import { Route as AuthenticatedAppointmentsRouteImport } from './routes/_authenticated/appointments'
@@ -45,6 +48,11 @@ const AuthenticatedPharmacyRoute = AuthenticatedPharmacyRouteImport.update({
   path: '/pharmacy',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedInsightsRoute = AuthenticatedInsightsRouteImport.update({
   id: '/insights',
   path: '/insights',
@@ -61,6 +69,16 @@ const AuthenticatedDigitalTwinRoute =
     path: '/digital-twin',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedConsentRoute = AuthenticatedConsentRouteImport.update({
+  id: '/consent',
+  path: '/consent',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedCartRoute = AuthenticatedCartRouteImport.update({
+  id: '/cart',
+  path: '/cart',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedCareRoute = AuthenticatedCareRouteImport.update({
   id: '/care',
   path: '/care',
@@ -84,9 +102,12 @@ export interface FileRoutesByFullPath {
   '/appointments': typeof AuthenticatedAppointmentsRoute
   '/ask-omni': typeof AuthenticatedAskOmniRoute
   '/care': typeof AuthenticatedCareRoute
+  '/cart': typeof AuthenticatedCartRoute
+  '/consent': typeof AuthenticatedConsentRoute
   '/digital-twin': typeof AuthenticatedDigitalTwinRoute
   '/doctors': typeof AuthenticatedDoctorsRoute
   '/insights': typeof AuthenticatedInsightsRoute
+  '/onboarding': typeof AuthenticatedOnboardingRoute
   '/pharmacy': typeof AuthenticatedPharmacyRoute
   '/reports': typeof AuthenticatedReportsRoute
 }
@@ -95,9 +116,12 @@ export interface FileRoutesByTo {
   '/appointments': typeof AuthenticatedAppointmentsRoute
   '/ask-omni': typeof AuthenticatedAskOmniRoute
   '/care': typeof AuthenticatedCareRoute
+  '/cart': typeof AuthenticatedCartRoute
+  '/consent': typeof AuthenticatedConsentRoute
   '/digital-twin': typeof AuthenticatedDigitalTwinRoute
   '/doctors': typeof AuthenticatedDoctorsRoute
   '/insights': typeof AuthenticatedInsightsRoute
+  '/onboarding': typeof AuthenticatedOnboardingRoute
   '/pharmacy': typeof AuthenticatedPharmacyRoute
   '/reports': typeof AuthenticatedReportsRoute
   '/': typeof AuthenticatedIndexRoute
@@ -109,9 +133,12 @@ export interface FileRoutesById {
   '/_authenticated/appointments': typeof AuthenticatedAppointmentsRoute
   '/_authenticated/ask-omni': typeof AuthenticatedAskOmniRoute
   '/_authenticated/care': typeof AuthenticatedCareRoute
+  '/_authenticated/cart': typeof AuthenticatedCartRoute
+  '/_authenticated/consent': typeof AuthenticatedConsentRoute
   '/_authenticated/digital-twin': typeof AuthenticatedDigitalTwinRoute
   '/_authenticated/doctors': typeof AuthenticatedDoctorsRoute
   '/_authenticated/insights': typeof AuthenticatedInsightsRoute
+  '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/_authenticated/pharmacy': typeof AuthenticatedPharmacyRoute
   '/_authenticated/reports': typeof AuthenticatedReportsRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
@@ -124,9 +151,12 @@ export interface FileRouteTypes {
     | '/appointments'
     | '/ask-omni'
     | '/care'
+    | '/cart'
+    | '/consent'
     | '/digital-twin'
     | '/doctors'
     | '/insights'
+    | '/onboarding'
     | '/pharmacy'
     | '/reports'
   fileRoutesByTo: FileRoutesByTo
@@ -135,9 +165,12 @@ export interface FileRouteTypes {
     | '/appointments'
     | '/ask-omni'
     | '/care'
+    | '/cart'
+    | '/consent'
     | '/digital-twin'
     | '/doctors'
     | '/insights'
+    | '/onboarding'
     | '/pharmacy'
     | '/reports'
     | '/'
@@ -148,9 +181,12 @@ export interface FileRouteTypes {
     | '/_authenticated/appointments'
     | '/_authenticated/ask-omni'
     | '/_authenticated/care'
+    | '/_authenticated/cart'
+    | '/_authenticated/consent'
     | '/_authenticated/digital-twin'
     | '/_authenticated/doctors'
     | '/_authenticated/insights'
+    | '/_authenticated/onboarding'
     | '/_authenticated/pharmacy'
     | '/_authenticated/reports'
     | '/_authenticated/'
@@ -198,6 +234,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPharmacyRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/onboarding': {
+      id: '/_authenticated/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof AuthenticatedOnboardingRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/insights': {
       id: '/_authenticated/insights'
       path: '/insights'
@@ -217,6 +260,20 @@ declare module '@tanstack/react-router' {
       path: '/digital-twin'
       fullPath: '/digital-twin'
       preLoaderRoute: typeof AuthenticatedDigitalTwinRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/consent': {
+      id: '/_authenticated/consent'
+      path: '/consent'
+      fullPath: '/consent'
+      preLoaderRoute: typeof AuthenticatedConsentRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/cart': {
+      id: '/_authenticated/cart'
+      path: '/cart'
+      fullPath: '/cart'
+      preLoaderRoute: typeof AuthenticatedCartRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/care': {
@@ -247,9 +304,12 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAppointmentsRoute: typeof AuthenticatedAppointmentsRoute
   AuthenticatedAskOmniRoute: typeof AuthenticatedAskOmniRoute
   AuthenticatedCareRoute: typeof AuthenticatedCareRoute
+  AuthenticatedCartRoute: typeof AuthenticatedCartRoute
+  AuthenticatedConsentRoute: typeof AuthenticatedConsentRoute
   AuthenticatedDigitalTwinRoute: typeof AuthenticatedDigitalTwinRoute
   AuthenticatedDoctorsRoute: typeof AuthenticatedDoctorsRoute
   AuthenticatedInsightsRoute: typeof AuthenticatedInsightsRoute
+  AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
   AuthenticatedPharmacyRoute: typeof AuthenticatedPharmacyRoute
   AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
@@ -259,9 +319,12 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAppointmentsRoute: AuthenticatedAppointmentsRoute,
   AuthenticatedAskOmniRoute: AuthenticatedAskOmniRoute,
   AuthenticatedCareRoute: AuthenticatedCareRoute,
+  AuthenticatedCartRoute: AuthenticatedCartRoute,
+  AuthenticatedConsentRoute: AuthenticatedConsentRoute,
   AuthenticatedDigitalTwinRoute: AuthenticatedDigitalTwinRoute,
   AuthenticatedDoctorsRoute: AuthenticatedDoctorsRoute,
   AuthenticatedInsightsRoute: AuthenticatedInsightsRoute,
+  AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
   AuthenticatedPharmacyRoute: AuthenticatedPharmacyRoute,
   AuthenticatedReportsRoute: AuthenticatedReportsRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
