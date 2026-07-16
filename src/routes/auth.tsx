@@ -7,6 +7,7 @@ import { Sparkles } from "lucide-react";
 
 export const Route = createFileRoute("/auth")({
   component: AuthPage,
+  ssr: false,
   head: () => ({ meta: [{ title: "Sign in — OmniCare" }] }),
 });
 
@@ -31,15 +32,17 @@ function AuthPage() {
         const { error } = await supabase.auth.signUp({
           email,
           password,
-          options: { emailRedirectTo: window.location.origin },
+          options: { emailRedirectTo: window.location.origin + "/onboarding" },
         });
         if (error) throw error;
-        toast.success("Account created. Welcome to OmniCare.");
+        toast.success("Account created. Let's set up your profile.");
+        navigate({ to: "/onboarding" });
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
+        const { data } = await supabase.from("profiles").select("onboarded").maybeSingle();
+        navigate({ to: (data as any)?.onboarded ? "/" : "/onboarding" });
       }
-      navigate({ to: "/" });
     } catch (err: any) {
       toast.error(err.message ?? "Something went wrong");
     } finally {

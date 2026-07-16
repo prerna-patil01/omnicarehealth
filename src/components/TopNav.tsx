@@ -24,6 +24,7 @@ const NAV = [
   { to: "/pharmacy", label: "Pharmacy" },
   { to: "/reports", label: "Reports" },
   { to: "/insights", label: "Insights" },
+  { to: "/consent", label: "Consent" },
 ] as const;
 
 export function TopNav() {
