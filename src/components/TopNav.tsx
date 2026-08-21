@@ -5,13 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
+import { SosModal } from "@/components/SosModal";
 import { toast } from "sonner";
 
 const NAV = [
@@ -24,17 +18,18 @@ const NAV = [
   { to: "/pharmacy", label: "Pharmacy" },
   { to: "/reports", label: "Reports" },
   { to: "/insights", label: "Insights" },
+  { to: "/notifications", label: "Notifications" },
   { to: "/consent", label: "Consent" },
 ] as const;
 
 export function TopNav() {
   const [dark, setDark] = useState(false);
   const [sos, setSos] = useState(false);
-  const [notifOpen, setNotifOpen] = useState(false);
   const [mobile, setMobile] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+
 
   async function signOut() {
     await queryClient.cancelQueries();
