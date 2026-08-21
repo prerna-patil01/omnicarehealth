@@ -46,7 +46,14 @@ export function TopNav() {
 
   return (
     <>
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground"
+      >
+        Skip to main content
+      </a>
       <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur">
+
         <div className="mx-auto flex max-w-[1400px] items-center gap-4 px-5 py-3">
           <Link to="/" className="flex items-center gap-2 shrink-0">
             <span className="text-2xl font-semibold text-primary tracking-tight">
