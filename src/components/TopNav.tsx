@@ -107,10 +107,12 @@ export function TopNav() {
             </Button>
             <button
               onClick={() => setSos(true)}
-              className="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-coral px-3.5 py-1.5 text-sm text-coral-foreground shadow-soft hover:brightness-110 transition"
+              aria-label="SOS — open emergency assistance"
+              className="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-coral px-3.5 py-2 min-h-11 text-sm text-coral-foreground shadow-soft hover:brightness-110 transition"
             >
-              <Siren className="h-4 w-4" /> SOS
+              <Siren className="h-4 w-4" aria-hidden="true" /> SOS
             </button>
+
             <div className="ml-1 h-9 w-9 rounded-full bg-primary text-primary-foreground grid place-items-center text-sm font-semibold">
               PP
             </div>
