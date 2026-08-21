@@ -93,12 +93,14 @@ export function TopNav() {
             <Button
               variant="ghost"
               size="icon"
-              className="rounded-full"
-              onClick={() => setNotifOpen(true)}
-              aria-label="Notifications"
+              className="rounded-full relative min-h-11 min-w-11"
+              onClick={() => navigate({ to: "/notifications" })}
+              aria-label="Notifications, 7 unread"
             >
               <Bell className="h-5 w-5" />
+              <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-coral" aria-hidden="true" />
             </Button>
+
             <Button
               variant="ghost"
               size="icon"
