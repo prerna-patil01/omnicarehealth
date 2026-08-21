@@ -170,64 +170,8 @@ export function TopNav() {
         )}
       </header>
 
-      <Dialog open={sos} onOpenChange={setSos}>
-        <DialogContent className="rounded-2xl">
-          <DialogHeader>
-            <DialogTitle className="text-2xl">
-              <span className="editorial-italic">Emergency</span> assistance
-            </DialogTitle>
-            <DialogDescription>
-              Sharing your live location and health identity with the nearest response network.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-3 mt-2">
-            {[
-              { label: "108 Ambulance — Mumbai", time: "ETA 6 min", tone: "bg-coral text-coral-foreground" },
-              { label: "Lilavati Hospital ER", time: "3.2 km", tone: "bg-primary text-primary-foreground" },
-              { label: "Emergency contact — Mom", time: "Auto-call in 15s", tone: "bg-secondary text-secondary-foreground" },
-            ].map((r) => (
-              <button
-                key={r.label}
-                onClick={() => {
-                  toast.success(`Dispatched: ${r.label}`);
-                  setSos(false);
-                }}
-                className={`w-full rounded-xl px-4 py-3 flex items-center justify-between ${r.tone}`}
-              >
-                <span className="font-medium">{r.label}</span>
-                <span className="text-sm opacity-90 editorial-italic">{r.time}</span>
-              </button>
-            ))}
-            <p className="text-xs text-muted-foreground pt-1">
-              Your allergies (Penicillin) and blood group (B+) are pre-shared with responders.
-            </p>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <SosModal open={sos} onOpenChange={setSos} />
 
-      <Dialog open={notifOpen} onOpenChange={setNotifOpen}>
-        <DialogContent className="rounded-2xl">
-          <DialogHeader>
-            <DialogTitle>Notifications</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-3">
-            {[
-              { t: "Omni finished analysing your symptoms", s: "Gallbladder — medium risk", when: "2m" },
-              { t: "Dengue advisory near Bandra West", s: "12 cases in 2 km radius", when: "1h" },
-              { t: "Ultrasound abdomen — Lilavati", s: "Suggested by Omni", when: "3h" },
-              { t: "Refill: Shelcal 500", s: "Runs out in 4 days", when: "yesterday" },
-            ].map((n, i) => (
-              <div key={i} className="rounded-xl border border-border p-3">
-                <div className="flex items-center justify-between">
-                  <p className="font-medium">{n.t}</p>
-                  <span className="text-xs text-muted-foreground">{n.when}</span>
-                </div>
-                <p className="text-sm text-muted-foreground editorial-italic">{n.s}</p>
-              </div>
-            ))}
-          </div>
-        </DialogContent>
-      </Dialog>
     </>
   );
 }
