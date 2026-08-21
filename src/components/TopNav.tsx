@@ -5,13 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
+import { SosModal } from "@/components/SosModal";
 import { toast } from "sonner";
 
 const NAV = [
@@ -24,17 +18,18 @@ const NAV = [
   { to: "/pharmacy", label: "Pharmacy" },
   { to: "/reports", label: "Reports" },
   { to: "/insights", label: "Insights" },
+  { to: "/notifications", label: "Notifications" },
   { to: "/consent", label: "Consent" },
 ] as const;
 
 export function TopNav() {
   const [dark, setDark] = useState(false);
   const [sos, setSos] = useState(false);
-  const [notifOpen, setNotifOpen] = useState(false);
   const [mobile, setMobile] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+
 
   async function signOut() {
     await queryClient.cancelQueries();
@@ -51,7 +46,14 @@ export function TopNav() {
 
   return (
     <>
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground"
+      >
+        Skip to main content
+      </a>
       <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur">
+
         <div className="mx-auto flex max-w-[1400px] items-center gap-4 px-5 py-3">
           <Link to="/" className="flex items-center gap-2 shrink-0">
             <span className="text-2xl font-semibold text-primary tracking-tight">
@@ -93,12 +95,14 @@ export function TopNav() {
             <Button
               variant="ghost"
               size="icon"
-              className="rounded-full"
-              onClick={() => setNotifOpen(true)}
-              aria-label="Notifications"
+              className="rounded-full relative min-h-11 min-w-11"
+              onClick={() => navigate({ to: "/notifications" })}
+              aria-label="Notifications, 7 unread"
             >
               <Bell className="h-5 w-5" />
+              <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-coral" aria-hidden="true" />
             </Button>
+
             <Button
               variant="ghost"
               size="icon"
@@ -110,10 +114,12 @@ export function TopNav() {
             </Button>
             <button
               onClick={() => setSos(true)}
-              className="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-coral px-3.5 py-1.5 text-sm text-coral-foreground shadow-soft hover:brightness-110 transition"
+              aria-label="SOS — open emergency assistance"
+              className="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-coral px-3.5 py-2 min-h-11 text-sm text-coral-foreground shadow-soft hover:brightness-110 transition"
             >
-              <Siren className="h-4 w-4" /> SOS
+              <Siren className="h-4 w-4" aria-hidden="true" /> SOS
             </button>
+
             <div className="ml-1 h-9 w-9 rounded-full bg-primary text-primary-foreground grid place-items-center text-sm font-semibold">
               PP
             </div>
@@ -170,64 +176,8 @@ export function TopNav() {
         )}
       </header>
 
-      <Dialog open={sos} onOpenChange={setSos}>
-        <DialogContent className="rounded-2xl">
-          <DialogHeader>
-            <DialogTitle className="text-2xl">
-              <span className="editorial-italic">Emergency</span> assistance
-            </DialogTitle>
-            <DialogDescription>
-              Sharing your live location and health identity with the nearest response network.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-3 mt-2">
-            {[
-              { label: "108 Ambulance — Mumbai", time: "ETA 6 min", tone: "bg-coral text-coral-foreground" },
-              { label: "Lilavati Hospital ER", time: "3.2 km", tone: "bg-primary text-primary-foreground" },
-              { label: "Emergency contact — Mom", time: "Auto-call in 15s", tone: "bg-secondary text-secondary-foreground" },
-            ].map((r) => (
-              <button
-                key={r.label}
-                onClick={() => {
-                  toast.success(`Dispatched: ${r.label}`);
-                  setSos(false);
-                }}
-                className={`w-full rounded-xl px-4 py-3 flex items-center justify-between ${r.tone}`}
-              >
-                <span className="font-medium">{r.label}</span>
-                <span className="text-sm opacity-90 editorial-italic">{r.time}</span>
-              </button>
-            ))}
-            <p className="text-xs text-muted-foreground pt-1">
-              Your allergies (Penicillin) and blood group (B+) are pre-shared with responders.
-            </p>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <SosModal open={sos} onOpenChange={setSos} />
 
-      <Dialog open={notifOpen} onOpenChange={setNotifOpen}>
-        <DialogContent className="rounded-2xl">
-          <DialogHeader>
-            <DialogTitle>Notifications</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-3">
-            {[
-              { t: "Omni finished analysing your symptoms", s: "Gallbladder — medium risk", when: "2m" },
-              { t: "Dengue advisory near Bandra West", s: "12 cases in 2 km radius", when: "1h" },
-              { t: "Ultrasound abdomen — Lilavati", s: "Suggested by Omni", when: "3h" },
-              { t: "Refill: Shelcal 500", s: "Runs out in 4 days", when: "yesterday" },
-            ].map((n, i) => (
-              <div key={i} className="rounded-xl border border-border p-3">
-                <div className="flex items-center justify-between">
-                  <p className="font-medium">{n.t}</p>
-                  <span className="text-xs text-muted-foreground">{n.when}</span>
-                </div>
-                <p className="text-sm text-muted-foreground editorial-italic">{n.s}</p>
-              </div>
-            ))}
-          </div>
-        </DialogContent>
-      </Dialog>
     </>
   );
 }
